@@ -1,0 +1,439 @@
+{% if template.name contains "product" %}
+      <script>
+      document.addEventListener("click", function (event) {
+        if (event.target.id === "configure-button") {
+          var productTitleElement = document.querySelector("a.product__title h2");
+          var productTitle = productTitleElement ? productTitleElement.textContent.trim() : "untitled";
+          console.log("Botón setup click"); 
+          if (typeof gtag === "function") {
+            gtag("event", "cfg_step_view", {
+              step_number: 1,
+              step_name: 'model',
+              product: productTitle
+            });
+          } else {
+            console.warn("gtag is not available");
+          }
+        }
+      });
+    </script>
+
+
+<script>
+(function() {
+  if (document.body.getAttribute('data-cfg-gallery-swiper-listener') === 'true') return;
+  document.body.setAttribute('data-cfg-gallery-swiper-listener', 'true');
+
+  document.addEventListener("click", function(event) {
+    var button = event.target.closest('[class^="swiper-button-"]');
+    var productTitleElement = document.querySelector("a.product__title h2");
+    var productTitle = productTitleElement ? productTitleElement.textContent.trim() : "untitled";
+    if (button && event.isTrusted) {
+      var direction = "";
+      if (button.classList.contains("swiper-button-next")) {
+        direction = "right";
+      } else if (button.classList.contains("swiper-button-prev")) {
+        direction = "left";
+      }
+      if (direction) {
+        gtag('event', 'cfg_gallery_swipe', {
+          direction: direction,
+          product: productTitle
+        });
+      }
+    }
+  });
+})();
+</script>
+
+    <script>
+  document.addEventListener('click', function(event) {
+    var targetElement = event.target.closest('.swiper-button-prev, .swiper-button-next');
+    var productTitleElement = document.querySelector("a.product__title h2");
+    var productTitle = productTitleElement ? productTitleElement.textContent.trim() : "untitled";
+    if (targetElement) {
+      var swipeDirection = '';
+      if (targetElement.classList.contains('swiper-button-prev')) {
+        swipeDirection = 'backward';
+      } else if (targetElement.classList.contains('swiper-button-next')) {
+        swipeDirection = 'forward';
+      }
+      
+      if (swipeDirection && typeof gtag === 'function') {
+        gtag('event', 'cfg_page_swipe', {
+          direction: swipeDirection,
+          product: productTitle
+        });
+      } else if (!swipeDirection) {
+        console.error("Could not determine swipe direction");
+      } else {
+        console.error("The gtag function is not available");
+      }
+    }
+  });
+</script>
+
+ {% endif %}
+
+  <script>
+  document.addEventListener("DOMContentLoaded", function() {
+    document.addEventListener("click", function(event) {
+      var clickable = event.target.closest("a, button, [class*='btn'], [role='button']");
+      var productTitleElement = document.querySelector("a.product__title h2");
+    var productTitle = productTitleElement ? productTitleElement.textContent.trim() : "untitled";
+      if (clickable) {
+        var buttonText = clickable.textContent.trim();
+        if (typeof gtag === "function") {
+          gtag('event', 'cfg_button_click', {
+            button_text: buttonText,
+            product: productTitle
+          });
+        } else {
+          console.error("The gtag function is not available");
+        }
+      }
+    });
+  });
+</script>
+
+<script>
+  document.addEventListener('click', function(event) {
+    var targetElement = event.target.closest('#next-button-extra');
+    var clickable = event.target.closest("a, button, [class*='btn'], [role='button']");
+      var productTitleElement = document.querySelector("a.product__title h2");
+    if (targetElement) {
+      var dataId = targetElement.getAttribute('data-id');
+      var stepNumber;
+      
+      switch (dataId) {
+        case 'suspension':
+          stepNumber = 5;
+          break;
+        case 'storage':
+          stepNumber = 6;
+          break;
+        case 'charging':
+          stepNumber = 7;
+          break;
+        case 'security':
+          stepNumber = 7;
+          break;
+        default:
+          stepNumber = 0;
+      }
+
+      if (typeof gtag === 'function') {
+        gtag('event', 'cfg_step_view', {
+          step_name: dataId,
+          step_number: stepNumber,
+          product: productTitle
+        });
+      } else {
+        console.error("The gtag function is not available");
+      }
+    }
+  });
+</script>
+
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    var colorOptions = document.querySelectorAll(".select-variant");
+      var clickable = event.target.closest("a, button, [class*='btn'], [role='button']");
+      var productTitleElement = document.querySelector("a.product__title h2");
+    colorOptions.forEach(function (option) {
+      option.addEventListener("click", function (event) {
+        if (event.isTrusted) { 
+          var colorName = this.getAttribute("data-color");
+
+          if (colorName) {
+            gtag("event", "cfg_option_select", {
+              option_name: colorName,
+              step_number: 2,
+              step_name: "tank",
+              product: productTitle
+            });
+            window.selectedColor = colorName;
+          }
+        }
+      });
+    });
+    var nextButton = document.getElementById("next-button-tank");
+
+    if (nextButton) {
+      nextButton.addEventListener("click", function () {
+        gtag("event", "cfg_step_view", {
+          step_number: 2,
+          step_name: "tank",
+          product: productTitle
+        });
+
+        if (window.selectedColor) {
+          gtag("event", "cfg_option_pre-selected", {
+            option_name: window.selectedColor,
+            step_number: 2,
+            step_name: "tank",
+            product: productTitle
+          });
+        }
+      });
+    }
+  });
+</script>
+
+<script>
+    var nextButton = document.getElementById("next-button-extra");
+    var clickable = event.target.closest("a, button, [class*='btn'], [role='button']");
+      var productTitleElement = document.querySelector("a.product__title h2");
+    if (nextButton) {
+      nextButton.addEventListener("click", function () {
+        gtag("event", "cfg_step_view", {
+          step_number: 5,
+          step_name: 'extra',
+          product: productTitle
+        });
+      });
+    }
+</script>
+
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    var selectedProductName = null;
+
+    var productWrappers = document.querySelectorAll(".select-variant");
+var clickable = event.target.closest("a, button, [class*='btn'], [role='button']");
+      var productTitleElement = document.querySelector("a.product__title h2");
+    productWrappers.forEach(function (wrapper) {
+      wrapper.addEventListener("click", function (event) {
+        if (event.isTrusted) { 
+          selectedProductName = this.getAttribute("data-color"); 
+
+          if (selectedProductName) {
+            gtag("event", "cfg_option_select", {
+              option_name: selectedProductName,
+              step_number: 4,
+              step_name: "mudguard",
+               product: productTitle
+            });
+          }
+        }
+      });
+    });
+
+    var nextButton = document.getElementById("next-button-mudguard");
+
+    if (nextButton) {
+      nextButton.addEventListener("click", function () {
+        gtag("event", "cfg_step_view", {
+          step_number: 4,
+          step_name: "mudguard",
+           product: productTitle
+        });
+
+        if (selectedProductName) {
+          gtag("event", "cfg_option_pre-selected", {
+            option_name: selectedProductName,
+            step_number: 4,
+            step_name: "mudguard",
+             product: productTitle
+          });
+        }
+      }, { once: true });
+    }
+  });
+</script>
+
+  <script>
+  document.addEventListener("DOMContentLoaded", function () {
+    var nextButton = document.getElementById("next-button-save");
+var clickable = event.target.closest("a, button, [class*='btn'], [role='button']");
+      var productTitleElement = document.querySelector("a.product__title h2");
+    if (nextButton) {
+      nextButton.addEventListener("click", function () {
+        gtag("event", "cfg_step_view", {
+          step_number: 8,
+          step_name: 'save',
+           product: productTitle
+        });
+      });
+    }
+  });
+
+document.addEventListener("DOMContentLoaded", function () {
+    var saveButton = document.querySelector(".save-button"); 
+var clickable = event.target.closest("a, button, [class*='btn'], [role='button']");
+      var productTitleElement = document.querySelector("a.product__title h2");
+    if (saveButton) {
+        saveButton.addEventListener("click", function () {
+            gtag("event", "cfg_step_view", {
+                step_number: 8,
+                step_name: "save",
+              product: productTitle
+            });
+            gtag("event", "cfg_summary_option_change", {
+                step_number: 8,
+                step_name: "save",
+              product: productTitle
+            });
+            let form = saveButton.closest("form");
+            if (form) {
+                form.dispatchEvent(new Event("submit", { bubbles: true, cancelable: true }));
+            }
+        });
+    }
+});
+</script>
+
+  <script>
+  document.addEventListener("DOMContentLoaded", function () {
+    var clickable = event.target.closest("a, button, [class*='btn'], [role='button']");
+      var productTitleElement = document.querySelector("a.product__title h2");
+      let formObserver = setInterval(() => {
+          let emailField = document.querySelector("input[name='email']");
+          let phoneField = document.querySelector("input[name='phone']");
+
+          if (emailField && phoneField) {
+              clearInterval(formObserver); 
+
+              emailField.addEventListener("change", function () {
+                  if (this.value) {
+                        gtag("event", "cfg_save_email", {
+                          step_number: 8,
+                          step_name: 'save',
+                          product: productTitle
+                      });
+                  }
+              });
+
+              phoneField.addEventListener("change", function () {
+                  if (this.value) {
+                      gtag("event", "cfg_save_phone", {
+                          step_number: 8,
+                          step_name: 'save',
+                        product: productTitle
+                      });
+                  }
+              });
+          }
+      }, 1000); 
+  });
+</script>
+
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    var selectedProductName = null;
+
+    var productWrappers = document.querySelectorAll(".extra-product-wrapper");
+var clickable = event.target.closest("a, button, [class*='btn'], [role='button']");
+      var productTitleElement = document.querySelector("a.product__title h2");
+    productWrappers.forEach(function (wrapper) {
+      wrapper.addEventListener("click", function (event) {
+        if (event.isTrusted) { 
+          selectedProductName = this.getAttribute("data-product-name");
+
+          if (selectedProductName) {
+            gtag("event", "cfg_option_select", {
+              option_name: selectedProductName,
+              step_number: 3,
+              step_name: "seat",
+              product: productTitle
+            });
+          }
+        }
+      });
+    });
+
+    var nextButton = document.getElementById("next-button-seat");
+
+    if (nextButton) {
+      nextButton.addEventListener("click", function () {
+        gtag("event", "cfg_step_view", {
+          step_number: 3,
+          step_name: "seat",
+          product: productTitle
+        });
+
+        if (selectedProductName) {
+          gtag("event", "cfg_option_pre-selected", {
+            option_name: selectedProductName,
+            step_number: 3,
+            step_name: "seat",
+            product: productTitle
+          });
+        }
+      });
+    }
+  });
+</script>
+
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    var nextButton = document.getElementById("continue-to-checkout");
+    var clickable = event.target.closest("a, button, [class*='btn'], [role='button']");
+      var productTitleElement = document.querySelector("a.product__title h2");
+
+    if (nextButton) {
+      nextButton.addEventListener("click", function () {
+        gtag("event", "cfg_step_view", {
+          step_number: 9,
+          step_name: 'continue-to-checkout',
+          product: productTitle
+        });
+      });
+    }
+  });
+</script>
+
+<script>
+  var financeWrapper = document.querySelector('.finance-link-wrapper');
+  if (financeWrapper) {
+    financeWrapper.addEventListener('click', function() {
+      if (typeof gtag === 'function') {
+        gtag('event', 'finance_click', {
+          event_category: 'Finance',
+          event_label: 'Finance Available Click'
+        });
+      } else {
+        console.error('gtag');
+      }
+    });
+  } else {
+  }
+</script>
+
+
+<script>
+  var depositStartValue = null;
+
+  $("#deposit-slider-1").ionRangeSlider({
+    min: 500,
+    max: 5495,
+    from: 2000,
+    step: 100,
+    skin: "round",
+    prefix: cart_currency_iso == "EUR" ? "" : "£",
+    postfix: cart_currency_iso == "EUR" ? "£" : "",
+    prettify_enabled: true,
+    prettify_separator: cart_currency_iso == "EUR" ? "." : ",",
+    onStart: function(data) {
+  
+      depositStartValue = data.from;
+    },
+    onFinish: function(data) {
+      var endValue = data.from;
+      var action = endValue > depositStartValue ? 'increase' : (endValue < depositStartValue ? 'decrease' : 'none');
+
+      if (action !== 'none' && typeof gtag === 'function') {
+        gtag('event', 'slider', {
+          element: 'deposit',
+          action: action,
+          start_position: depositStartValue,
+          end_position: endValue
+        });
+      }
+
+      depositStartValue = endValue;
+    }
+  });
+</script>
+
+
